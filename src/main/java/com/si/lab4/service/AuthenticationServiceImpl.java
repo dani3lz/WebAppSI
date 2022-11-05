@@ -24,7 +24,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Override
     public LoginResponse registerNewUser(UserRequest request) {
         String email = request.getEmail();
-        if(emailExists(email)){
+        if (emailExists(email)) {
             throw new UserAlreadyRegisteredException("Email: " + email + " is already registered");
         }
         saveUser(request);
@@ -41,7 +41,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         sessionService.invalidateToken(token);
     }
 
-    private User saveUser(UserRequest request){
+    private User saveUser(UserRequest request) {
         Credential credential = new Credential(encoder.encode(request.getPassword()));
         User newUser = new User(request.getEmail());
         newUser.setCredential(credential);
@@ -49,7 +49,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         return userRepository.save(newUser);
     }
 
-    private boolean emailExists(String email){
+    private boolean emailExists(String email) {
         return userRepository.findUserByEmail(email).isPresent();
     }
 }

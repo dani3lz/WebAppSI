@@ -1,6 +1,5 @@
 package com.si.lab4.service;
 
-
 import com.si.lab4.exceptions.InvalidCredentialsException;
 import com.si.lab4.model.entity.Credential;
 import com.si.lab4.model.requests.LoginResponse;
@@ -8,7 +7,6 @@ import com.si.lab4.model.requests.UserRequest;
 import com.si.lab4.repository.CredentialRepository;
 import com.si.lab4.security.JWTUtil;
 import io.jsonwebtoken.Jwts;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -18,7 +16,7 @@ import java.util.Date;
 
 @Service
 @RequiredArgsConstructor
-public class ValidationServiceImpl implements ValidationService{
+public class ValidationServiceImpl implements ValidationService {
 
     private final CredentialRepository credentialRepository;
 
@@ -34,7 +32,7 @@ public class ValidationServiceImpl implements ValidationService{
         Credential credential = credentialRepository.findCredentialByUserEmailContaining(request.getEmail())
                 .orElseThrow(() -> new InvalidCredentialsException("Email or password is incorrect"));
 
-        if(passwordEncoder.matches(request.getPassword(), credential.getPassword())){
+        if (passwordEncoder.matches(request.getPassword(), credential.getPassword())) {
             return createLoginResponse(request);
         }
         throw new InvalidCredentialsException("Email or password is incorrect");
@@ -46,7 +44,7 @@ public class ValidationServiceImpl implements ValidationService{
         Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody().setExpiration(new Date());
     }
 
-    private LoginResponse createLoginResponse(UserRequest request){
+    private LoginResponse createLoginResponse(UserRequest request) {
 
         String token = jwtToken.generateToken(request.getEmail());
 

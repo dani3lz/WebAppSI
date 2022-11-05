@@ -13,7 +13,7 @@ public class JWTUtil {
     private String jwtSecret;
 
 
-    public String generateToken(String email){
+    public String generateToken(String email) {
         return Jwts.builder()
                 .setSubject(email)
                 .setIssuedAt(new Date())
