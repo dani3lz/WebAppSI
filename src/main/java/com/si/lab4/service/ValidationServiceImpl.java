@@ -30,24 +30,23 @@ public class ValidationServiceImpl implements ValidationService {
     @Override
     public LoginResponse validateCredentials(UserRequest request) {
         Credential credential = credentialRepository.findCredentialByUserEmailContaining(request.getEmail())
-                .orElseThrow(() -> new InvalidCredentialsException("Email or password is incorrect"));
+                .orElseThrow(InvalidCredentialsException::new);
 
         if (passwordEncoder.matches(request.getPassword(), credential.getPassword())) {
             return createLoginResponse(request);
         }
-        throw new InvalidCredentialsException("Email or password is incorrect");
+        throw new InvalidCredentialsException();
     }
 
     @Override
     public void invalidateToken(String token) {
-
+        LoginResponse.isExpired = true;
         Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody().setExpiration(new Date());
     }
 
     private LoginResponse createLoginResponse(UserRequest request) {
-
         String token = jwtToken.generateToken(request.getEmail());
-
+        LoginResponse.isExpired = false;
         return new LoginResponse(token);
     }
 
