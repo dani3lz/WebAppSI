@@ -1,10 +1,13 @@
 package com.si.lab4.service;
 
 
+import com.si.lab4.exceptions.InvalidCredentialsException;
+import com.si.lab4.exceptions.PasswordNotMatch;
 import com.si.lab4.exceptions.UserAlreadyRegisteredException;
 import com.si.lab4.model.entity.Credential;
 import com.si.lab4.model.entity.User;
 import com.si.lab4.model.requests.LoginResponse;
+import com.si.lab4.model.requests.RegisterRequest;
 import com.si.lab4.model.requests.UserRequest;
 import com.si.lab4.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -22,13 +25,13 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final ValidationService sessionService;
 
     @Override
-    public LoginResponse registerNewUser(UserRequest request) {
-        String email = request.getEmail();
-        if (emailExists(email)) {
-            throw new UserAlreadyRegisteredException("Email: " + email + " is already registered");
+    public LoginResponse registerNewUser(RegisterRequest request) {
+        if(validate(request)){
+            UserRequest userRequest = new UserRequest(request.getEmail(), request.getPassword());
+            saveUser(userRequest);
+            return sessionService.validateCredentials(userRequest);
         }
-        saveUser(request);
-        return sessionService.validateCredentials(request);
+        throw new InvalidCredentialsException();
     }
 
     @Override
@@ -47,6 +50,16 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         newUser.setCredential(credential);
         credential.setUser(newUser);
         return userRepository.save(newUser);
+    }
+
+    private boolean validate(RegisterRequest request){
+        String email = request.getEmail();
+        if (emailExists(email)) {
+            throw new UserAlreadyRegisteredException(email);
+        } else if (!request.getPassword().equals(request.getConfirmPassword())){
+            throw new PasswordNotMatch();
+        }
+        return true;
     }
 
     private boolean emailExists(String email) {

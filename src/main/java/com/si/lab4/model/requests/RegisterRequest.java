@@ -1,10 +1,8 @@
 package com.si.lab4.model.requests;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.validation.constraints.Email;
@@ -12,11 +10,9 @@ import javax.validation.constraints.NotBlank;
 
 @Data
 @Builder
-@Setter
 @Getter
-@AllArgsConstructor
-@NoArgsConstructor
-public class UserRequest {
+@Setter
+public class RegisterRequest {
 
     @NotBlank
     @Email
@@ -24,4 +20,7 @@ public class UserRequest {
 
     @NotBlank
     private String password;
+
+    @NotBlank
+    private String confirmPassword;
 }

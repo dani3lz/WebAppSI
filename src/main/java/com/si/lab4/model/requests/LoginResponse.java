@@ -1,10 +1,16 @@
 package com.si.lab4.model.requests;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
 @Data
-@AllArgsConstructor
+@Getter
+@Setter
+@RequiredArgsConstructor
 public class LoginResponse {
+
     private final String token;
+    public static boolean isExpired = true;
 }
