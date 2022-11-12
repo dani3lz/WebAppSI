@@ -1,4 +1,4 @@
-package com.si.lab4.security.config;
+package com.si.lab4.security;
 
 import org.springframework.security.web.context.AbstractSecurityWebApplicationInitializer;
 
