@@ -11,5 +11,4 @@ public interface AuthenticationService {
 
     LoginResponse loginUser(UserRequest request);
 
-    void logoutUser(String token);
 }

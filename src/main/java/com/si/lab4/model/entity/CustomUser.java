@@ -23,20 +23,20 @@ import javax.persistence.Table;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class User {
+public class CustomUser {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userId;
 
-    private String email;
+    private String username;
 
     @JsonBackReference
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "credential_id")
     private Credential credential;
 
-    public User(String email) {
-        this.email = email;
+    public CustomUser(String username) {
+        this.username = username;
     }
 }

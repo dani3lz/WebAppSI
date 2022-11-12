@@ -2,20 +2,13 @@
 <html lang="en" dir="ltr">
 <head>
     <meta charset="utf-8">
-    <title>Coming soon...</title>
+    <title>ACCESS DENIED!</title>
     <link rel="stylesheet" th:href="@{/css/soon.css}">
 </head>
 <body>
 <div class="bgimg">
-    <div class="topleft">
-        <form th:action="@{/logout}" method="post">
-            <div>
-                <input type="submit" value="Logout">
-            </div>
-        </form>
-    </div>
     <div class="middle">
-        <h1>COMING SOON</h1>
+        <h1>ACCESS DENIED!</h1>
         <hr>
     </div>
     <div class="bottomleft">

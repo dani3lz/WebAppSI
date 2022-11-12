@@ -8,7 +8,6 @@ import com.si.lab4.repository.CredentialRepository;
 import com.si.lab4.security.JWTUtil;
 import io.jsonwebtoken.Jwts;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -24,12 +23,9 @@ public class ValidationServiceImpl implements ValidationService {
 
     private final JWTUtil jwtToken;
 
-    @Value("${jwt.secret}")
-    private String jwtSecret;
-
     @Override
     public LoginResponse validateCredentials(UserRequest request) {
-        Credential credential = credentialRepository.findCredentialByUserEmailContaining(request.getEmail())
+        Credential credential = credentialRepository.findCredentialByCustomUserUsernameContaining(request.getUsername())
                 .orElseThrow(InvalidCredentialsException::new);
 
         if (passwordEncoder.matches(request.getPassword(), credential.getPassword())) {
@@ -40,13 +36,11 @@ public class ValidationServiceImpl implements ValidationService {
 
     @Override
     public void invalidateToken(String token) {
-        LoginResponse.isExpired = true;
-        Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody().setExpiration(new Date());
+        Jwts.parser().setSigningKey("secretKey").parseClaimsJws(token).getBody().setExpiration(new Date());
     }
 
     private LoginResponse createLoginResponse(UserRequest request) {
-        String token = jwtToken.generateToken(request.getEmail());
-        LoginResponse.isExpired = false;
+        String token = jwtToken.generateToken(request.getUsername());
         return new LoginResponse(token);
     }
 
