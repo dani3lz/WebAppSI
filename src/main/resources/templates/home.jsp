@@ -2,20 +2,20 @@
 <html lang="en" dir="ltr">
 <head>
     <meta charset="utf-8">
-    <title>Coming soon...</title>
+    <title>HOME</title>
     <link rel="stylesheet" th:href="@{/css/soon.css}">
 </head>
 <body>
 <div class="bgimg">
     <div class="topleft">
-        <form th:action="@{/logout}" method="post">
+        <form th:action="@{/login}" method="get">
             <div>
-                <input type="submit" value="Logout">
+                <input type="submit" value="Login">
             </div>
         </form>
     </div>
     <div class="middle">
-        <h1>COMING SOON</h1>
+        <h1>HOME PAGE</h1>
         <hr>
     </div>
     <div class="bottomleft">

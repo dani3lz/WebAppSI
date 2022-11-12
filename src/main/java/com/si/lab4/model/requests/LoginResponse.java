@@ -12,5 +12,5 @@ import lombok.Setter;
 public class LoginResponse {
 
     private final String token;
-    public static boolean isExpired = true;
+
 }

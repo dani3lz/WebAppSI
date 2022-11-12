@@ -5,8 +5,8 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
 
 @Data
 @Builder
@@ -15,8 +15,8 @@ import javax.validation.constraints.NotBlank;
 public class RegisterRequest {
 
     @NotBlank
-    @Email
-    private String email;
+    @Pattern(regexp = "^[A-Za-z0-9]*$")
+    private String username;
 
     @NotBlank
     private String password;
