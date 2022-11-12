@@ -1,8 +1,7 @@
-package com.si.lab4.security.config;
+package com.si.lab4.security;
 
 import com.si.lab4.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -21,7 +20,6 @@ import java.util.List;
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
-@Slf4j
 public class SecurityConfig {
 
     private final UserRepository userRepository;
@@ -34,21 +32,18 @@ public class SecurityConfig {
                         .username(user.getUsername())
                         .password(user.getCredential()
                                 .getPassword())
-                        .roles("USER")
+                        .roles(user.getRole())
                         .build()));
-        userDetails.forEach(user -> log.info(user.toString()));
 
         return new InMemoryUserDetailsManager(userDetails);
     }
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-
         return http
                 .authorizeRequests(configurer ->
                         configurer
-                                .antMatchers("/soon").hasRole("USER")
-                                .antMatchers("/sys/**").hasRole("ADMIN"))
+                                .antMatchers("/soon/**").hasRole("USER"))
 
                 .formLogin(configurer ->
                         configurer
@@ -57,12 +52,7 @@ public class SecurityConfig {
                                 .defaultSuccessUrl("/soon", true)
                                 .permitAll())
 
-
                 .logout(LogoutConfigurer::permitAll)
-
-                .exceptionHandling(configurer ->
-                        configurer
-                                .accessDeniedPage("/access-denied"))
 
                 .build();
     }

@@ -1,10 +1,9 @@
 package com.si.lab4.controllers.login;
 
 import com.si.lab4.exceptions.InvalidCredentialsException;
-import com.si.lab4.exceptions.PasswordNotMatch;
+import com.si.lab4.exceptions.PasswordNotMatchException;
 import com.si.lab4.exceptions.UserAlreadyRegisteredException;
 import com.si.lab4.model.requests.RegisterRequest;
-import com.si.lab4.model.requests.UserRequest;
 import com.si.lab4.service.AuthenticationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
@@ -63,21 +62,13 @@ public class AuthController {
         return new ModelAndView("redirect:/soon");
     }
 
-    @PostMapping(value = "/login")
-    public ModelAndView processLogin(@ModelAttribute UserRequest userRequest) {
-        authenticationService.loginUser(userRequest);
-
-        // redirect not work here (SpringConfig file)
-        return new ModelAndView("redirect:/soon");
-    }
-
     @PostMapping(value = "/register")
     public ModelAndView processRegistration(@ModelAttribute RegisterRequest registerRequest) {
         authenticationService.registerNewUser(registerRequest);
         return new ModelAndView("redirect:/login");
     }
 
-    @ExceptionHandler(PasswordNotMatch.class)
+    @ExceptionHandler(PasswordNotMatchException.class)
     public ModelAndView redirectPasswordNotMatch() {
         return new ModelAndView("redirect:/register?password");
     }
