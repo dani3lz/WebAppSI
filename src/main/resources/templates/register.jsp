@@ -4,9 +4,12 @@
     <meta charset="utf-8">
     <title>REGISTER</title>
     <link rel="stylesheet" th:href="@{/css/login.css}">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" th:href="@{/css/navbar.css}">
 </head>
 <body>
+
+<div class="navbar" th:insert="navbar :: navbar"></div>
+
 <div class="wrapper">
     <div class="form-container">
         <div class="form-inner">

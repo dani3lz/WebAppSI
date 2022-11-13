@@ -25,7 +25,7 @@ public class SecurityConfig {
     private final UserRepository userRepository;
 
     @Bean
-    public InMemoryUserDetailsManager userDetailsManager(){
+    public InMemoryUserDetailsManager userDetailsManager() {
         List<UserDetails> userDetails = new ArrayList<>();
         userRepository.findAll()
                 .forEach(user -> userDetails.add(User.builder()
@@ -58,7 +58,7 @@ public class SecurityConfig {
     }
 
     @Bean
-    public PasswordEncoder passwordEncoder(){
+    public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 }

@@ -4,22 +4,19 @@
     <meta charset="utf-8">
     <title>Coming soon...</title>
     <link rel="stylesheet" th:href="@{/css/soon.css}">
+    <link rel="stylesheet" th:href="@{/css/navbar.css}">
 </head>
 <body>
+<div class="navbar" th:insert="navbar :: navbar"></div>
 <div class="bgimg">
     <div class="topleft">
-        <form th:action="@{/logout}" method="post">
-            <div>
-                <input type="submit" value="Logout">
-            </div>
-        </form>
     </div>
     <div class="middle">
         <h1>COMING SOON</h1>
         <hr>
     </div>
     <div class="bottomleft">
-        <p>Securitatea Informationala, Laboratorul nr.4</p>
+
     </div>
 </div>
 </body>

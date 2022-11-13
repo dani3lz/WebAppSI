@@ -4,23 +4,20 @@
     <meta charset="utf-8">
     <title>HOME</title>
     <link rel="stylesheet" th:href="@{/css/soon.css}">
+    <link rel="stylesheet" th:href="@{/css/navbar.css}">
 </head>
 <body>
-<div class="bgimg">
-    <div class="topleft">
-        <form th:action="@{/login}" method="get">
-            <div>
-                <input type="submit" value="Login">
-            </div>
-        </form>
+<div class="navbar" th:insert="navbar :: navbar"></div>
+    <div class="bgimg">
+        <div class="topleft">
+        </div>
+        <div class="middle">
+            <h1>HOME PAGE</h1>
+            <hr>
+        </div>
+        <div class="bottomleft">
+            <p>Securitatea Informationala, Laboratorul nr.4</p>
+        </div>
     </div>
-    <div class="middle">
-        <h1>HOME PAGE</h1>
-        <hr>
-    </div>
-    <div class="bottomleft">
-        <p>Securitatea Informationala, Laboratorul nr.4</p>
-    </div>
-</div>
 </body>
 </html>
