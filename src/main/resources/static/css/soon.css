@@ -24,6 +24,9 @@ body, html {
     font-family: "Courier New", Courier, monospace;
     /* Set the font-size to 25 pixels */
     font-size: 25px;
+
+    margin-left: 260px; /* Same as the width of the sidebar */
+    padding: 0 10px;
 }
 
 /* Position text in the top-left corner */

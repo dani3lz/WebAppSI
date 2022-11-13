@@ -31,6 +31,7 @@ public class AuthController {
         if (authentication == null || authentication instanceof AnonymousAuthenticationToken) {
             ModelAndView model = new ModelAndView("login");
             model.addObject("info", "");
+            model.addObject("isLogged", false);
 
             if (!Objects.isNull(error)) {
                 model.addObject("info", "Invalid username or password");
@@ -50,6 +51,7 @@ public class AuthController {
         if (authentication == null || authentication instanceof AnonymousAuthenticationToken) {
             ModelAndView model = new ModelAndView("register");
             model.addObject("info", "");
+            model.addObject("isLogged", false);
 
             if(!Objects.isNull(exist)){
                 model.addObject("info", "This username already exists!");
