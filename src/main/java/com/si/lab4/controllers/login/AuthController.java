@@ -53,9 +53,9 @@ public class AuthController {
             model.addObject("info", "");
             model.addObject("isLogged", false);
 
-            if(!Objects.isNull(exist)){
+            if (!Objects.isNull(exist)) {
                 model.addObject("info", "This username already exists!");
-            } else if(!Objects.isNull(password)) {
+            } else if (!Objects.isNull(password)) {
                 model.addObject("info", "Passwords do not match!");
             }
 

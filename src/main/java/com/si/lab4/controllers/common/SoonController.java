@@ -11,7 +11,7 @@ import org.springframework.web.servlet.ModelAndView;
 public class SoonController {
 
     @GetMapping("/soon")
-    public ModelAndView comingSoon(){
+    public ModelAndView comingSoon() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         ModelAndView model = new ModelAndView("soon");
         model.addObject("isLogged", true);
