@@ -62,7 +62,6 @@ public class CustomEncoder implements PasswordEncoder {
 
         byte[] bytes;
         try {
-            System.out.println();
             bytes = cipher.doFinal(encodedPassword.getBytes());
         } catch (IllegalBlockSizeException | BadPaddingException e) {
             throw new RuntimeException(e);

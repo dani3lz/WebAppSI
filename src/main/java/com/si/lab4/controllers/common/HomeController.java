@@ -11,7 +11,7 @@ import org.springframework.web.servlet.ModelAndView;
 public class HomeController {
 
     @GetMapping("/")
-    public ModelAndView homePage(){
+    public ModelAndView homePage() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         ModelAndView model = new ModelAndView("home");
         model.addObject("isLogged", true);
