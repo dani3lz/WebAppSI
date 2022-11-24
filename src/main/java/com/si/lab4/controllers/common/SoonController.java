@@ -13,7 +13,7 @@ public class SoonController {
     @GetMapping("/soon")
     public ModelAndView comingSoon() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        ModelAndView model = new ModelAndView("soon");
+        ModelAndView model = new ModelAndView("convertor");
         model.addObject("isLogged", true);
         if (authentication == null || authentication instanceof AnonymousAuthenticationToken) {
             model.addObject("isLogged", false);
