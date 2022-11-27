@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <title>HOME</title>
-    <link rel="stylesheet" th:href="@{/css/soon.css}">
+    <link rel="stylesheet" th:href="@{/css/home.css}">
     <link rel="stylesheet" th:href="@{/css/navbar.css}">
 </head>
 <body>

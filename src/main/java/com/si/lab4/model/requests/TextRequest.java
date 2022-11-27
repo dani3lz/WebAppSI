@@ -16,8 +16,6 @@ public class TextRequest {
 
     private String mode;
 
-    private String privateKey;
-
     private String inputText;
 
     private String key;

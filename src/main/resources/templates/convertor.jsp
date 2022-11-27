@@ -5,6 +5,7 @@
     <title>Convertor</title>
     <link rel="stylesheet" th:href="@{/css/convertor.css}">
     <link rel="stylesheet" th:href="@{/css/navbar.css}">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 </head>
 <body>
 
@@ -15,7 +16,7 @@
     <!-- INPUT -->
     <div class="form-container">
         <div class="form-inner">
-            <form th:action="@{/convertor}" th:object="${ConvertorRequest}" class="convert" method="POST">
+            <form th:action="@{/convertor}" th:object="${TextRequest}" class="convert" method="POST">
 
                 <div class="field">
                     <legend>Select mode:</legend>
@@ -30,13 +31,14 @@
                     </div>
                 </div>
                 <div class="field">
-                <label>Input:</label>
+                    <label>Input:</label>
                 </div>
-                <div class="field key">
-                    <input name="privateKey" type="text" placeholder="Key for Decrypt" required>
+                <div class="field key inputKey hide">
+                    <input class="inputLabel" name="key" type="text" placeholder="Key for Decrypt">
                 </div>
                 <div class="inputField">
-                    <textarea id="inputText" name="inputText" rows="8" cols="120" placeholder="Input text" required></textarea>
+                    <textarea id="inputText" name="inputText" rows="8" cols="120" placeholder="Input text"
+                              required></textarea>
                 </div>
 
                 <div class="field">
@@ -63,22 +65,35 @@
             </form>
 
             <!-- OUTPUT -->
-            <div class="field output">
-            <label>Output:</label>
+            <div class="field output" th:classappend="${hideKey} ? hide">
+                <label>Key:</label>
             </div>
-            <div class="field key">
-                <input name="privateKey" type="text" placeholder="Private Key">
+            <div class="field key" th:classappend="${hideKey} ? hide">
+                <input name="key" type="text" th:value="${key}">
             </div>
-            <div class="field key">
-                <input name="publicKey" type="text" placeholder="Public Key">
+            <div class="field output" th:classappend="${hide} ? hide">
+                <label>Output text:</label>
             </div>
-            <div class="outputField">
-                <textarea id="outputText" name="outputText" rows="8" cols="120"></textarea>
+            <div class="outputField" th:classappend="${hide} ? hide">
+                <textarea id="outputText" name="outputText" rows="8" cols="120" th:text="${outputText}"></textarea>
             </div>
 
         </div>
     </div>
 </div>
 
+<script>
+    $(document).ready(function () {
+        $('#ENCRYPT').click(function () {
+            $('.inputKey').addClass('hide').prop('required', false);
+            $('.inputLabel').prop('required', false);
+
+        });
+        $('#DECRYPT').click(function () {
+            $('.inputKey').removeClass('hide');
+            $('.inputLabel').prop('required', true);
+        });
+    });
+</script>
 </body>
 </html>
