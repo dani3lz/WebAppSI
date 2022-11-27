@@ -1,5 +1,6 @@
 package com.si.lab4.service;
 
+import com.si.lab4.exceptions.SomethingIsWrongException;
 import com.si.lab4.model.requests.TextRequest;
 import com.si.lab4.model.response.TextResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -7,15 +8,20 @@ import org.springframework.stereotype.Service;
 
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
+import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.GCMParameterSpec;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
+import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
 
 @Service
 @Slf4j
 public class CryptServiceImpl implements CryptService {
+
+    public CryptServiceImpl() throws NoSuchPaddingException, NoSuchAlgorithmException {
+    }
 
     public enum Mode {
         ENCRYPT,
@@ -28,18 +34,21 @@ public class CryptServiceImpl implements CryptService {
         AES
     }
 
-    private SecretKey key = null;
+    private SecretKey keyAES = null;
+    private SecretKey keyDES = null;
     private static final int KEY_SIZE_AES = 128;
     private static final int KEY_SIZE_DES = 56;
 
-    private Cipher encryptionCipherAES;
-
-    private Cipher encryptionCipherDES;
-
+    private Cipher encryptionCipherAES = Cipher.getInstance("AES/GCM/NoPadding");
+    private Cipher encryptionCipherDES = Cipher.getInstance("DES/CBC/PKCS5Padding");
+    private Cipher decryptionCipherDES = Cipher.getInstance("DES/CBC/PKCS5Padding");
+    private Cipher decryptionCipherAES = Cipher.getInstance("AES/GCM/NoPadding");
 
     @Override
     public TextResponse doOperation(TextRequest request) throws Exception {
         TextResponse response = new TextResponse();
+        initAES();
+        initDES();
         log.info("Starting to do something...");
         if (request.getMode().equals(Mode.ENCRYPT.toString())) {
             response = encryptText(request);
@@ -56,6 +65,7 @@ public class CryptServiceImpl implements CryptService {
             SecretKey originalKey = new SecretKeySpec(decodedKey, 0, decodedKey.length, Algorithm.AES.toString());
             return aesDecrypt(request.getInputText(), originalKey);
         } else if ("DES".equals(request.getAlgorithm())) {
+
             byte[] decodedKey = Base64.getDecoder().decode(request.getKey());
             SecretKey originalKey = new SecretKeySpec(decodedKey, 0, decodedKey.length, Algorithm.DES.toString());
             return desDecrypt(request.getInputText(), originalKey);
@@ -67,11 +77,12 @@ public class CryptServiceImpl implements CryptService {
     }
 
     private TextResponse encryptText(TextRequest request) throws Exception {
+
         if (Algorithm.AES.toString().equals(request.getAlgorithm())) {
-            initAES();
+            // initAES();
             return aesEncrypt(request.getInputText());
         } else if (Algorithm.DES.toString().equals(request.getAlgorithm())) {
-            initDES();
+            // initDES();
             return desEncrypt(request.getInputText());
         } else if (Algorithm.RSA.toString().equals(request.getAlgorithm())) {
 
@@ -80,63 +91,93 @@ public class CryptServiceImpl implements CryptService {
         throw new RuntimeException("mda");
     }
 
-    private TextResponse aesEncrypt(String inputText) throws Exception {
-        TextResponse response = new TextResponse();
-        response.setOutputText(encryptAES(inputText, key));
-        response.setKey(Base64.getEncoder().encodeToString(key.getEncoded()));
-        return response;
+    private TextResponse aesEncrypt(String inputText) {
+        try {
+            TextResponse response = new TextResponse();
+            response.setOutputText(encryptAES(inputText, keyAES));
+            response.setKey(Base64.getEncoder().encodeToString(keyAES.getEncoded()));
+            return response;
+        } catch (Exception e) {
+            throw new SomethingIsWrongException("Trist dar ceva e gresit");
+        }
     }
 
-    private TextResponse aesDecrypt(String inputText, SecretKey key) throws Exception {
-        TextResponse response = new TextResponse();
-        response.setOutputText(decryptAES(inputText, key));
-        return response;
+    private TextResponse aesDecrypt(String inputText, SecretKey key) {
+        try {
+            TextResponse response = new TextResponse();
+            response.setOutputText(decryptAES(inputText, key));
+            return response;
+        } catch (Exception e) {
+            throw new SomethingIsWrongException("Trist dar ceva e gresit");
+        }
     }
 
     public String encryptAES(String data, SecretKey key) throws Exception {
-        byte[] dataInBytes = data.getBytes();
-        encryptionCipherAES = Cipher.getInstance("AES/GCM/NoPadding");
-        encryptionCipherAES.init(Cipher.ENCRYPT_MODE, key);
-        byte[] encryptedBytes = encryptionCipherAES.doFinal(dataInBytes);
-        return encode(encryptedBytes);
+        try {
+            byte[] dataInBytes = data.getBytes();
+            encryptionCipherAES.init(Cipher.ENCRYPT_MODE, key);
+            byte[] encryptedBytes = encryptionCipherAES.doFinal(dataInBytes);
+            return encode(encryptedBytes);
+        } catch (Exception e) {
+            throw new SomethingIsWrongException("Trist dar ceva e gresit");
+        }
     }
 
     public String decryptAES(String encryptedData, SecretKey key) throws Exception {
-        byte[] dataInBytes = decode(encryptedData);
-        Cipher decryptionCipher = Cipher.getInstance("AES/GCM/NoPadding");
-        GCMParameterSpec spec = new GCMParameterSpec(KEY_SIZE_AES, encryptionCipherAES.getIV());
-        decryptionCipher.init(Cipher.DECRYPT_MODE, key, spec);
-        byte[] decryptedBytes = decryptionCipher.doFinal(dataInBytes);
-        return new String(decryptedBytes);
+        try {
+            byte[] dataInBytes = decode(encryptedData);
+            GCMParameterSpec spec = new GCMParameterSpec(KEY_SIZE_AES, encryptionCipherAES.getIV());
+            decryptionCipherAES.init(Cipher.DECRYPT_MODE, key, spec);
+            byte[] decryptedBytes = decryptionCipherAES.doFinal(dataInBytes);
+            return new String(decryptedBytes);
+        } catch (Exception e) {
+            throw new SomethingIsWrongException("Trist dar ceva e gresit");
+        }
     }
 
     private TextResponse desEncrypt(String inputText) throws Exception {
-        TextResponse response = new TextResponse();
-        response.setOutputText(encryptDES(inputText, key));
-        response.setKey(Base64.getEncoder().encodeToString(key.getEncoded()));
-        return response;
+        try {
+            TextResponse response = new TextResponse();
+            response.setOutputText(encryptDES(inputText, keyDES));
+            response.setKey(Base64.getEncoder().encodeToString(keyDES.getEncoded()));
+            return response;
+        } catch (Exception e) {
+            throw new SomethingIsWrongException("Trist dar ceva e gresit");
+        }
     }
 
     public String encryptDES(String data, SecretKey key) throws Exception {
-        byte[] dataInBytes = data.getBytes();
-        encryptionCipherDES = Cipher.getInstance("DES/CBC/PKCS5Padding");
-        encryptionCipherDES.init(Cipher.ENCRYPT_MODE, key);
-        byte[] encryptedBytes = encryptionCipherDES.doFinal(dataInBytes);
-        return encode(encryptedBytes);
+        try {
+            byte[] dataInBytes = data.getBytes();
+            // encryptionCipherDES = Cipher.getInstance("DES/CBC/PKCS5Padding");
+            encryptionCipherDES.init(Cipher.ENCRYPT_MODE, key);
+            byte[] encryptedBytes = encryptionCipherDES.doFinal(dataInBytes);
+            return encode(encryptedBytes);
+        } catch (Exception e) {
+            throw new SomethingIsWrongException("Trist dar ceva e gresit");
+        }
     }
 
     private TextResponse desDecrypt(String inputText, SecretKey key) throws Exception {
-        TextResponse response = new TextResponse();
-        response.setOutputText(decryptDES(inputText, key));
-        return response;
+        try {
+            TextResponse response = new TextResponse();
+            response.setOutputText(decryptDES(inputText, key));
+            return response;
+        } catch (Exception e) {
+            throw new SomethingIsWrongException("Trist dar ceva e gresit");
+        }
     }
 
     public String decryptDES(String encryptedData, SecretKey key) throws Exception {
-        byte[] dataInBytes = decode(encryptedData);
-        Cipher decryptionCipher = Cipher.getInstance("DES/CBC/PKCS5Padding");
-        decryptionCipher.init(Cipher.DECRYPT_MODE, key, new IvParameterSpec(encryptionCipherDES.getIV()));
-        byte[] decryptedBytes = decryptionCipher.doFinal(dataInBytes);
-        return new String(decryptedBytes);
+        try {
+            byte[] dataInBytes = decode(encryptedData);
+            // Cipher decryptionCipherDES = Cipher.getInstance("DES/CBC/PKCS5Padding");
+            decryptionCipherDES.init(Cipher.DECRYPT_MODE, key, new IvParameterSpec(encryptionCipherDES.getIV()));
+            byte[] decryptedBytes = decryptionCipherDES.doFinal(dataInBytes);
+            return new String(decryptedBytes);
+        } catch (Exception e) {
+            throw new SomethingIsWrongException("Trist dar ceva e gresit");
+        }
     }
 
     private String encode(byte[] data) {
@@ -150,13 +191,13 @@ public class CryptServiceImpl implements CryptService {
     public void initAES() throws Exception {
         KeyGenerator keyGenerator = KeyGenerator.getInstance(Algorithm.AES.toString());
         keyGenerator.init(KEY_SIZE_AES);
-        this.key = keyGenerator.generateKey();
+        this.keyAES = keyGenerator.generateKey();
     }
 
     public void initDES() throws Exception {
         KeyGenerator keyGenerator = KeyGenerator.getInstance(Algorithm.DES.toString());
         keyGenerator.init(KEY_SIZE_DES);
-        this.key = keyGenerator.generateKey();
+        this.keyDES = keyGenerator.generateKey();
     }
 
 
