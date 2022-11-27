@@ -43,13 +43,14 @@ public class SecurityConfig {
         return http
                 .authorizeRequests(configurer ->
                         configurer
-                                .antMatchers("/soon/**").hasRole("USER"))
+                                .antMatchers("/soon/**").hasRole("USER")
+                                .antMatchers("/convertor/**").hasRole("USER"))
 
                 .formLogin(configurer ->
                         configurer
                                 .loginPage("/login")
                                 .loginProcessingUrl("/authenticateTheUser")
-                                .defaultSuccessUrl("/soon", true)
+                                .defaultSuccessUrl("/convertor", true)
                                 .permitAll())
 
                 .logout(LogoutConfigurer::permitAll)

@@ -12,7 +12,7 @@
     </div>
     <div class="nav-link">
         <a th:href="@{/}">Home</a>
-        <a th:href="@{/soon}" th:if="${isLogged == true}">Soon</a>
+        <a th:href="@{/convertor}" th:if="${isLogged == true}">Convertor</a>
 
     </div>
     <div class="nav-auth" th:if="${isLogged == false}">

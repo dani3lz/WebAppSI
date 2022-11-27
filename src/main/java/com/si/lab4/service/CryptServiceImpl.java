@@ -17,6 +17,17 @@ import java.util.Base64;
 @Slf4j
 public class CryptServiceImpl implements CryptService {
 
+    public enum Mode {
+        ENCRYPT,
+        DECRYPT
+    }
+
+    public enum Algorithm {
+        RSA,
+        DES,
+        AES
+    }
+
     private SecretKey key = null;
     private static final int KEY_SIZE_AES = 128;
     private static final int KEY_SIZE_DES = 56;
@@ -29,23 +40,24 @@ public class CryptServiceImpl implements CryptService {
     @Override
     public TextResponse doOperation(TextRequest request) throws Exception {
         TextResponse response = new TextResponse();
-        if ("encrypt".equals(request.getMode())) {
-           response = encryptText(request);
-        } else if ("decrypt".equals(request.getMode())) {
-           response = decryptText(request);
+        log.info("Starting to do something...");
+        if (request.getMode().equals(Mode.ENCRYPT.toString())) {
+            response = encryptText(request);
+        } else if (request.getMode().equals(Mode.DECRYPT.toString())) {
+            response = decryptText(request);
         }
-            log.info("O trecut de if");
-            return response;
+        log.info("Finish");
+        return response;
     }
 
     private TextResponse decryptText(TextRequest request) throws Exception {
         if ("AES".equals(request.getAlgorithm())) {
             byte[] decodedKey = Base64.getDecoder().decode(request.getKey());
-            SecretKey originalKey = new SecretKeySpec(decodedKey, 0, decodedKey.length, "AES");
+            SecretKey originalKey = new SecretKeySpec(decodedKey, 0, decodedKey.length, Algorithm.AES.toString());
             return aesDecrypt(request.getInputText(), originalKey);
         } else if ("DES".equals(request.getAlgorithm())) {
             byte[] decodedKey = Base64.getDecoder().decode(request.getKey());
-            SecretKey originalKey = new SecretKeySpec(decodedKey, 0, decodedKey.length, "DES");
+            SecretKey originalKey = new SecretKeySpec(decodedKey, 0, decodedKey.length, Algorithm.DES.toString());
             return desDecrypt(request.getInputText(), originalKey);
         } else if ("RSA".equals(request.getAlgorithm())) {
 
@@ -54,16 +66,14 @@ public class CryptServiceImpl implements CryptService {
         throw new RuntimeException("mda");
     }
 
-
-
     private TextResponse encryptText(TextRequest request) throws Exception {
-        if ("AES".equals(request.getAlgorithm())) {
+        if (Algorithm.AES.toString().equals(request.getAlgorithm())) {
             initAES();
             return aesEncrypt(request.getInputText());
-        } else if ("DES".equals(request.getAlgorithm())) {
+        } else if (Algorithm.DES.toString().equals(request.getAlgorithm())) {
             initDES();
             return desEncrypt(request.getInputText());
-        } else if ("RSA".equals(request.getAlgorithm())) {
+        } else if (Algorithm.RSA.toString().equals(request.getAlgorithm())) {
 
         } else
             return null;
@@ -74,17 +84,12 @@ public class CryptServiceImpl implements CryptService {
         TextResponse response = new TextResponse();
         response.setOutputText(encryptAES(inputText, key));
         response.setKey(Base64.getEncoder().encodeToString(key.getEncoded()));
-        response.setPrivateKey(null);
-        response.setPublicKey(null);
         return response;
     }
 
     private TextResponse aesDecrypt(String inputText, SecretKey key) throws Exception {
         TextResponse response = new TextResponse();
         response.setOutputText(decryptAES(inputText, key));
-        response.setKey(Base64.getEncoder().encodeToString(key.getEncoded()));
-        response.setPrivateKey(null);
-        response.setPublicKey(null);
         return response;
     }
 
@@ -109,8 +114,6 @@ public class CryptServiceImpl implements CryptService {
         TextResponse response = new TextResponse();
         response.setOutputText(encryptDES(inputText, key));
         response.setKey(Base64.getEncoder().encodeToString(key.getEncoded()));
-        response.setPrivateKey(null);
-        response.setPublicKey(null);
         return response;
     }
 
@@ -125,9 +128,6 @@ public class CryptServiceImpl implements CryptService {
     private TextResponse desDecrypt(String inputText, SecretKey key) throws Exception {
         TextResponse response = new TextResponse();
         response.setOutputText(decryptDES(inputText, key));
-        response.setKey(Base64.getEncoder().encodeToString(key.getEncoded()));
-        response.setPrivateKey(null);
-        response.setPublicKey(null);
         return response;
     }
 
@@ -148,13 +148,13 @@ public class CryptServiceImpl implements CryptService {
     }
 
     public void initAES() throws Exception {
-        KeyGenerator keyGenerator = KeyGenerator.getInstance("AES");
+        KeyGenerator keyGenerator = KeyGenerator.getInstance(Algorithm.AES.toString());
         keyGenerator.init(KEY_SIZE_AES);
         this.key = keyGenerator.generateKey();
     }
 
     public void initDES() throws Exception {
-        KeyGenerator keyGenerator = KeyGenerator.getInstance("DES");
+        KeyGenerator keyGenerator = KeyGenerator.getInstance(Algorithm.DES.toString());
         keyGenerator.init(KEY_SIZE_DES);
         this.key = keyGenerator.generateKey();
     }
