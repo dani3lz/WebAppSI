@@ -43,7 +43,6 @@ public class SecurityConfig {
         return http
                 .authorizeRequests(configurer ->
                         configurer
-                                .antMatchers("/soon/**").hasRole("USER")
                                 .antMatchers("/convertor/**").hasRole("USER"))
 
                 .formLogin(configurer ->

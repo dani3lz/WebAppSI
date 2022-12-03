@@ -1,11 +1,10 @@
 package com.si.lab4.controllers.common;
 
 import com.si.lab4.model.requests.TextRequest;
+import com.si.lab4.model.response.ConvertorResponse;
 import com.si.lab4.model.response.TextResponse;
 import com.si.lab4.service.CryptService;
 import lombok.RequiredArgsConstructor;
-import org.apache.logging.log4j.util.Strings;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -14,8 +13,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.ModelAndView;
+
+import java.util.Objects;
 
 @Controller
 @RequestMapping("/convertor")
@@ -25,48 +25,38 @@ public class CryptController {
     private final CryptService cryptService;
 
     @PostMapping
-    @ResponseStatus(HttpStatus.OK)
     public ModelAndView post(@ModelAttribute(name = "TextRequest") TextRequest request) throws Exception {
-        ModelAndView model = new ModelAndView("convertor");
-        model.addObject("error", Strings.EMPTY);
         TextResponse response = cryptService.doOperation(request);
+        ModelAndView model = new ModelAndView("convertor");
 
-        model.addObject("outputText", response.getOutputText());
-        model.addObject("key", response.getKey());
-        model.addObject("hide", false);
+        ConvertorResponse convertorResponse = new ConvertorResponse(
+                response.getKey(),
+                response.getOutputText(),
+                false,
+                false);
 
-        if (response.getKey() == null) {
-            model.addObject("hideKey", true);
-        } else {
-            model.addObject("hideKey", false);
+        model.addObject("response", convertorResponse);
+
+        if (Objects.isNull(response.getKey())) {
+            convertorResponse.setHideKey(true);
         }
-
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        model.addObject("isLogged", true);
-        if (authentication == null || authentication instanceof AnonymousAuthenticationToken) {
-            model.addObject("isLogged", false);
-        }
+        boolean isLogged = !Objects.isNull(authentication) && !(authentication instanceof AnonymousAuthenticationToken);
+        model.addObject("isLogged", isLogged);
 
         return model;
     }
 
     @GetMapping
-    @ResponseStatus(HttpStatus.OK)
     public ModelAndView get() {
         ModelAndView model = new ModelAndView("convertor");
-
-        model.addObject("key", Strings.EMPTY);
-        model.addObject("outputText", Strings.EMPTY);
-        model.addObject("hide", true);
-        model.addObject("hideKey", true);
-        model.addObject("error", Strings.EMPTY);
+        model.addObject("response", new ConvertorResponse());
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        model.addObject("isLogged", true);
-        if (authentication == null || authentication instanceof AnonymousAuthenticationToken) {
-            model.addObject("isLogged", false);
-        }
+        boolean isLogged = !Objects.isNull(authentication) && !(authentication instanceof AnonymousAuthenticationToken);
+        model.addObject("isLogged", isLogged);
+
         return model;
     }
 

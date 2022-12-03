@@ -12,12 +12,10 @@ public class HomeController {
 
     @GetMapping("/")
     public ModelAndView homePage() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         ModelAndView model = new ModelAndView("home");
-        model.addObject("isLogged", true);
-        if (authentication == null || authentication instanceof AnonymousAuthenticationToken) {
-            model.addObject("isLogged", false);
-        }
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        boolean isLogged = authentication != null && !(authentication instanceof AnonymousAuthenticationToken);
+        model.addObject("isLogged", isLogged);
         return model;
     }
 }
