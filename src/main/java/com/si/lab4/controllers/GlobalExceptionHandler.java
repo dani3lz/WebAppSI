@@ -17,8 +17,8 @@ import java.util.Objects;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(SomethingIsWrongException.class)
-    public ModelAndView somethingIsWrong(){
+    @ExceptionHandler(value = {SomethingIsWrongException.class, IllegalStateException.class, IllegalArgumentException.class})
+    public ModelAndView somethingIsWrong() {
         ModelAndView model = new ModelAndView("convertor");
         model.addObject("response", new ConvertorResponse("We can't process your request."));
 
