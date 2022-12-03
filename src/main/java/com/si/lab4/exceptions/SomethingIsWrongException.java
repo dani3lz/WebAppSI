@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(HttpStatus.EXPECTATION_FAILED)
 public class SomethingIsWrongException extends RuntimeException {
-    public SomethingIsWrongException(String message) {
-        super(message);
+    public SomethingIsWrongException() {
+        super("Something goes wrong...");
     }
 }

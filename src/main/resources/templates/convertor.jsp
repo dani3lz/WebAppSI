@@ -34,10 +34,10 @@
                     <label>Input:</label>
                 </div>
                 <div class="field key inputKey hide">
-                    <input class="inputLabel" name="key" type="text" placeholder="Key for Decrypt">
+                    <input class="inputLabel" name="key" type="text" placeholder="Key for Decrypt" minlength="3">
                 </div>
                 <div class="inputField">
-                    <textarea id="inputText" name="inputText" rows="8" cols="120" placeholder="Input text"
+                    <textarea id="inputText" name="inputText" rows="8" cols="120" minlength="3" placeholder="Input text"
                               required></textarea>
                 </div>
 
@@ -62,6 +62,7 @@
                     <div class="btn-layer"></div>
                     <input type="submit" value="Convert">
                 </div>
+                <div class="error" th:text="${error}"></div>
             </form>
 
             <!-- OUTPUT -->
