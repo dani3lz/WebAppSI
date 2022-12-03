@@ -4,6 +4,7 @@ import com.si.lab4.model.requests.TextRequest;
 import com.si.lab4.model.response.TextResponse;
 import com.si.lab4.service.CryptService;
 import lombok.RequiredArgsConstructor;
+import org.apache.logging.log4j.util.Strings;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -25,18 +26,21 @@ public class CryptController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.OK)
-    public ModelAndView doSomething(@ModelAttribute(name = "TextRequest") TextRequest request) throws Exception {
+    public ModelAndView post(@ModelAttribute(name = "TextRequest") TextRequest request) throws Exception {
         ModelAndView model = new ModelAndView("convertor");
+        model.addObject("error", Strings.EMPTY);
         TextResponse response = cryptService.doOperation(request);
 
         model.addObject("outputText", response.getOutputText());
         model.addObject("key", response.getKey());
         model.addObject("hide", false);
-        if(response.getKey() == null) {
+
+        if (response.getKey() == null) {
             model.addObject("hideKey", true);
         } else {
             model.addObject("hideKey", false);
         }
+
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         model.addObject("isLogged", true);
@@ -52,10 +56,11 @@ public class CryptController {
     public ModelAndView get() {
         ModelAndView model = new ModelAndView("convertor");
 
-        model.addObject("key", "");
-        model.addObject("outputText", "");
+        model.addObject("key", Strings.EMPTY);
+        model.addObject("outputText", Strings.EMPTY);
         model.addObject("hide", true);
         model.addObject("hideKey", true);
+        model.addObject("error", Strings.EMPTY);
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         model.addObject("isLogged", true);
