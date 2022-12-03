@@ -62,21 +62,21 @@
                     <div class="btn-layer"></div>
                     <input type="submit" value="Convert">
                 </div>
-                <div class="error" th:text="${error}"></div>
+                <div class="error" th:text="${response.error}"></div>
             </form>
 
             <!-- OUTPUT -->
-            <div class="field output" th:classappend="${hideKey} ? hide">
+            <div class="field output" th:classappend="${response.hideKey} ? hide">
                 <label>Key:</label>
             </div>
-            <div class="field key" th:classappend="${hideKey} ? hide">
-                <input name="key" type="text" th:value="${key}">
+            <div class="field key" th:classappend="${response.hideKey} ? hide">
+                <input name="key" type="text" th:value="${response.key}">
             </div>
-            <div class="field output" th:classappend="${hide} ? hide">
+            <div class="field output" th:classappend="${response.hide} ? hide">
                 <label>Output text:</label>
             </div>
-            <div class="outputField" th:classappend="${hide} ? hide">
-                <textarea id="outputText" name="outputText" rows="8" cols="120" th:text="${outputText}"></textarea>
+            <div class="outputField" th:classappend="${response.hide} ? hide">
+                <textarea id="outputText" name="outputText" rows="8" cols="120" th:text="${response.outputText}"></textarea>
             </div>
 
         </div>
